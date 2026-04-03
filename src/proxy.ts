@@ -20,7 +20,10 @@ export default withAuth(
                 if (token.role === 'admin' || token.role === 'recruiter') {
                     return NextResponse.redirect(new URL('/dashboard', req.url));
                 }
-                return NextResponse.redirect(new URL('/', req.url));
+                if (token.role === 'jobseeker') {
+                    return NextResponse.redirect(new URL('/jobseeker/dashboard', req.url));
+                }
+                return NextResponse.next();
             }
             return NextResponse.next();
         }

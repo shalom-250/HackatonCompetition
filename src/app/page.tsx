@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Briefcase, MapPin, Clock, Search, ArrowRight, Zap, Globe, Sparkles } from 'lucide-react';
+import { Briefcase, MapPin, Clock, Search, ArrowRight, Zap, Globe, Sparkles, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
 
 export default function PublicJobsPage() {
+  const { data: session } = useSession();
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,6 +21,8 @@ export default function PublicJobsPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  const dashboardHref = (session?.user as any)?.role === 'jobseeker' ? '/jobseeker/dashboard' : '/dashboard';
+
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
       <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
@@ -28,8 +32,17 @@ export default function PublicJobsPage() {
             <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-[#1E3A8A] to-[#7C3AED] bg-clip-text text-transparent">Umurava Careers</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-bold text-slate-600 hover:text-[#1E3A8A]">Recruiter Login</Link>
-            <Link href="/register" className="bg-[#1E3A8A] text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all">Sign Up</Link>
+            {session ? (
+              <Link href={dashboardHref} className="bg-[#1E3A8A] text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all flex items-center gap-2">
+                <LayoutDashboard className="w-4 h-4" />
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-bold text-slate-600 hover:text-[#1E3A8A]">Recruiter Login</Link>
+                <Link href="/register" className="bg-[#1E3A8A] text-white px-5 py-2.5 rounded-xl text-sm font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all">Sign Up</Link>
+              </>
+            )}
           </div>
         </div>
       </header>
