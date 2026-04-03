@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F9FAFB;
+  --foreground: #111827;
+
+  /* Primary - Deep Blue (Trust) - Tailwind 4 will pick these up automatically with --color prefix */
+  --color-primary: #1E3A8A;
+  --color-primary-light: #2563EB;
+
+  /* Secondary - AI Purple (Innovation) */
+  --color-secondary: #7C3AED;
+  --color-secondary-light: #8B5CF6;
+
+  /* Success - Green */
+  --color-success: #16A34A;
+
+  /* Warning/Risk - Soft Red */
+  --color-error: #DC2626;
+
+  /* Text */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Custom Gradient Utility */
+.bg-ai-gradient {
+  background: linear-gradient(to right, var(--color-primary-light), var(--color-secondary));
+}
+
+.text-ai-gradient {
+  background: linear-gradient(to right, var(--color-primary-light), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
