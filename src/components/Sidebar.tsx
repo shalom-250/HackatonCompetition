@@ -12,7 +12,8 @@ import {
     LogOut,
     Sparkles,
     FileText,
-    Search
+    Search,
+    User
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -34,7 +35,7 @@ const seekerMenu = [
     { icon: Search, label: 'Find Jobs', href: '/' },
     { icon: FileText, label: 'Applications', href: '/jobseeker/applications' },
     { icon: Sparkles, label: 'AI Skill Radar', href: '/jobseeker/radar' },
-    { icon: Settings, label: 'Profile', href: '/settings' },
+    { icon: User, label: 'Profile', href: '/jobseeker/profile' },
 ];
 
 export default function Sidebar() {

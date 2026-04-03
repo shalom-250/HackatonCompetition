@@ -1,9 +1,15 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { Briefcase, MapPin, Clock, ArrowLeft, Send, CheckCircle2, ShieldCheck, Zap, Award } from 'lucide-react';
+import { Briefcase, MapPin, Clock, ArrowLeft, Send, CheckCircle2, ShieldCheck, Zap, Award, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 export default function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -12,11 +18,13 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
     const [applying, setApplying] = useState(false);
     const [success, setSuccess] = useState(false);
 
+    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         resume: '',
-        skills: ''
+        skills: '',
+        motivation: ''
     });
 
     useEffect(() => {
@@ -32,6 +40,10 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
 
     const handleApply = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (step === 1) {
+            setStep(2);
+            return;
+        }
         setApplying(true);
 
         try {
@@ -68,8 +80,8 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                     <p className="text-slate-500 font-bold mb-8 leading-relaxed">
                         Your profile for **{job.title}** has been securely screened by our AI. The recruiter in Kigali will be notified instantly.
                     </p>
-                    <Link href="/" className="inline-flex items-center gap-2 bg-[#1E3A8A] text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all">
-                        Browse More Roles
+                    <Link href="/jobseeker/dashboard" className="inline-flex items-center gap-2 bg-[#1E3A8A] text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all">
+                        View Application Status
                     </Link>
                 </motion.div>
             </div>
@@ -112,57 +124,107 @@ export default function JobDetailPage({ params }: { params: Promise<{ id: string
                             <div className="prose prose-slate max-w-none">
                                 <h3 className="text-xl font-black text-slate-900 mb-4">About the Role</h3>
                                 <p className="text-slate-600 font-medium leading-relaxed mb-8">
-                                    Join our expanding team and build world-class products.
+                                    Join our expanding team and build world-class products. At Umurava AI, we are committed to accelerating Rwanda's tech ecosystem.
                                 </p>
                             </div>
+                        </div>
+
+                        <div className="bg-[#1E3A8A] p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:opacity-20 transition-all">
+                                <Zap className="w-32 h-32" />
+                            </div>
+                            <h2 className="text-2xl font-black mb-2">AI-Powered Journey</h2>
+                            <p className="text-blue-100 text-sm font-medium">Your submission will be dynamically scored to ensure you land in the top percentile of candidate screening.</p>
                         </div>
                     </div>
 
                     <div className="space-y-8">
                         <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl sticky top-28">
-                            <h2 className="text-2xl font-black text-slate-900 mb-8 tracking-tight">Express Interest</h2>
-                            <form onSubmit={handleApply} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Full Name</label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
-                                        placeholder="Kezia Kalisa"
-                                    />
+                            <div className="flex items-center justify-between mb-8">
+                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">Express Interest</h2>
+                                <div className="flex gap-1">
+                                    <div className={cn("w-6 h-1 rounded-full transitions-all duration-500", step === 1 ? "bg-[#1E3A8A]" : "bg-slate-200")} />
+                                    <div className={cn("w-6 h-1 rounded-full transitions-all duration-500", step === 2 ? "bg-[#1E3A8A]" : "bg-slate-200")} />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Work Email</label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={formData.email}
-                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
-                                        placeholder="talent@rwandacloud.com"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Key Skills</label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.skills}
-                                        onChange={e => setFormData({ ...formData, skills: e.target.value })}
-                                        className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
-                                        placeholder="React, TypeScript"
-                                    />
-                                </div>
+                            </div>
+
+                            <form onSubmit={handleApply} className="space-y-6 text-left">
+                                {step === 1 ? (
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Full Name</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.name}
+                                                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
+                                                placeholder="Kezia Kalisa"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Work Email</label>
+                                            <input
+                                                type="email"
+                                                required
+                                                value={formData.email}
+                                                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                                className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
+                                                placeholder="talent@rwandacloud.com"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Key Skills</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.skills}
+                                                onChange={e => setFormData({ ...formData, skills: e.target.value })}
+                                                className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all"
+                                                placeholder="React, TypeScript"
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Resume / CV (Simulated)</label>
+                                            <div className="w-full h-32 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center gap-2 group hover:border-[#1E3A8A] transition-all cursor-pointer">
+                                                <FileText className="w-8 h-8 text-slate-300 group-hover:text-[#1E3A8A] transition-colors" />
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Click to upload PDF</span>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Why should we hire you? (AI Motivation)</label>
+                                            <textarea
+                                                required
+                                                value={formData.motivation}
+                                                onChange={e => setFormData({ ...formData, motivation: e.target.value })}
+                                                rows={4}
+                                                className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm transition-all resize-none"
+                                                placeholder="I am passionate about..."
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
+
                                 <button
                                     type="submit"
                                     disabled={applying}
                                     className="w-full bg-[#1E3A8A] text-white py-5 rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-[#2563EB] transition-all shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95"
                                 >
-                                    {applying ? 'AI Matching...' : 'Apply via Umurava AI'}
+                                    {applying ? 'AI Matching...' : step === 1 ? 'Next: Fulfillment' : 'Complete Application'}
                                     {!applying && <Send className="w-5 h-5" />}
                                 </button>
+                                {step === 2 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setStep(1)}
+                                        className="w-full text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-[#1E3A8A] transition-colors"
+                                    >
+                                        Back to Info
+                                    </button>
+                                )}
                             </form>
                         </div>
                     </div>

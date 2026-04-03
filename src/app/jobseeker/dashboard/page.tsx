@@ -12,7 +12,8 @@ import {
     ChevronRight,
     Search,
     MapPin,
-    Target
+    Target,
+    Zap
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -35,7 +36,7 @@ export default function SeekerDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#F9FAFB] lg:pl-[280px]">
+        <div className="p-0">
             {/* Dynamic Greeting */}
             <header className="p-8 pb-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -94,19 +95,28 @@ export default function SeekerDashboard() {
                                                     <Briefcase className="w-6 h-6 text-[#1E3A8A]" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-black text-slate-900 group-hover:text-[#1E3A8A] transition-colors">{app.role}</h3>
-                                                    <div className="flex items-center gap-3 text-xs font-bold text-slate-500 mt-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <h3 className="font-black text-slate-900 group-hover:text-[#1E3A8A] transition-colors">{app.role}</h3>
+                                                        {app.status === 'Selection' && (
+                                                            <span className="flex items-center gap-1 text-[9px] font-black bg-green-500 text-white px-2 py-0.5 rounded-full animate-bounce">
+                                                                <CheckCircle2 className="w-2 h-2" /> RECRUITED
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-500 mt-1">
                                                         <span>{app.company}</span>
-                                                        <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                                                        <span>Applied on {app.date}</span>
+                                                        <span className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                                                        <span className="text-[#7C3AED]">Req: AI screening + Tech Int.</span>
+                                                        <span className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                                                        <span>Applied {app.date}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <div className="text-right">
                                                     <div className={`text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest ${app.status === 'In Review' ? 'bg-blue-100 text-blue-600' :
-                                                            app.status === 'Selection' ? 'bg-purple-100 text-purple-600' :
-                                                                'bg-slate-200 text-slate-600'
+                                                        app.status === 'Selection' ? 'bg-purple-100 text-purple-600' :
+                                                            'bg-slate-200 text-slate-600'
                                                         }`}>
                                                         {app.status}
                                                     </div>

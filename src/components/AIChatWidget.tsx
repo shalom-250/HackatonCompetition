@@ -51,8 +51,9 @@ export default function AIChatWidget() {
     return (
         <>
             <button
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-8 right-8 w-14 h-14 bg-[#1E3A8A] text-white rounded-full flex items-center justify-center shadow-xl hover:bg-[#2563EB] transition-all hover:scale-110 z-50 group"
+                onClick={() => setIsOpen(!isOpen)}
+                className="fixed bottom-8 right-8 w-14 h-14 bg-[#1E3A8A] text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-50 group overflow-hidden"
+                suppressHydrationWarning={true}
             >
                 <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />
             </button>

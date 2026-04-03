@@ -73,7 +73,7 @@ export default function RegisterPage() {
                         <User className="w-10 h-10" />
                     </div>
                     <h1 className="text-2xl font-black text-[#111827] tracking-tight mb-2">Join Umurava AI</h1>
-                    <p className="text-[#6B7280] font-bold text-xs tracking-wide uppercase">Recruiter Talent Cloud</p>
+                    <p className="text-[#6B7280] font-bold text-xs tracking-wide uppercase">AI Career Cloud</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-10 space-y-5">
@@ -100,7 +100,7 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest pl-1">Work Email</label>
+                        <label className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest pl-1">Personal Email</label>
                         <div className="relative group">
                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] group-focus-within:text-[#2563EB]" />
                             <input
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 className="w-full bg-[#F9FAFB] border-2 border-slate-50 rounded-2xl py-3.5 pl-12 pr-6 outline-none focus:ring-4 focus:ring-[#2563EB]/10 focus:border-[#2563EB] transition-all text-sm font-bold"
-                                placeholder="recruiter@company.com"
+                                placeholder="talent@example.com"
                             />
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export default function RegisterPage() {
                         disabled={loading}
                         className="w-full bg-[#1E3A8A] text-white rounded-2xl py-4 font-black flex items-center justify-center gap-3 hover:bg-[#2563EB] transition-all shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-[0.98]"
                     >
-                        {loading ? 'Creating Account...' : 'Create Recruiter Profile'}
+                        {loading ? 'Creating Account...' : 'Create Talent Profile'}
                         {!loading && <ArrowRight className="w-5 h-5" />}
                     </button>
 

@@ -49,9 +49,19 @@ export default function PublicJobsPage() {
             <div className="bg-white p-2 rounded-2xl flex items-center shadow-2xl max-w-2xl">
               <div className="flex-1 flex items-center px-4">
                 <Search className="w-5 h-5 text-slate-400 mr-3" />
-                <input type="text" placeholder="Search by job title or keyword..." className="w-full text-slate-900 font-bold outline-none placeholder:text-slate-300" />
+                <input
+                  type="text"
+                  placeholder="Search by job title or keyword..."
+                  className="w-full text-slate-900 font-bold outline-none placeholder:text-slate-300"
+                  suppressHydrationWarning={true}
+                />
               </div>
-              <button className="bg-[#2563EB] text-white px-8 py-3 rounded-xl font-black hover:bg-[#1E3A8A] transition-all">Search Jobs</button>
+              <button
+                className="bg-[#2563EB] text-white px-8 py-3 rounded-xl font-black hover:bg-[#1E3A8A] transition-all"
+                suppressHydrationWarning={true}
+              >
+                Search Jobs
+              </button>
             </div>
           </motion.div>
         </div>

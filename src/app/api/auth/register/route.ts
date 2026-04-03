@@ -22,7 +22,7 @@ export async function POST(req: Request) {
             name,
             email,
             password: hashedPassword,
-            role: 'recruiter',
+            role: 'jobseeker',
         });
 
         return NextResponse.json({ message: 'User registered successfully', user: { name: user.name, email: user.email } }, { status: 201 });
