@@ -1,222 +1,291 @@
 'use client';
 
 import { useState } from 'react';
-import Sidebar from "@/components/Sidebar";
-import Navbar from "@/components/Navbar";
-import { ArrowLeft, Upload, FileText, CheckCircle, Users, BarChart3, Sparkles, Zap } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import {
+    Briefcase,
+    MapPin,
+    DollarSign,
+    Clock,
+    FileText,
+    Sparkles,
+    ArrowRight,
+    Loader2,
+    ShieldCheck
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import Sidebar from '@/components/Sidebar';
+import Navbar from '@/components/Navbar';
 
 export default function NewJobPage() {
-    const [step, setStep] = useState(1);
     const router = useRouter();
-    const [jobData, setJobData] = useState({
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const [formData, setFormData] = useState({
         title: '',
         description: '',
-        location: '',
+        level: '5.III',
+        postCount: 1,
+        contractType: 'Under Contract',
+        reportsTo: 'SPIU Coordinator',
+        location: 'Kigali, Rwanda',
+        employmentType: 'Full-time',
+        deadline: '',
+        responsibilities: [''],
+        exams: ['PsychometricTest', 'Written', 'Oral'],
+        qualifications: [{ degree: 'Bachelor\'s Degree in Accounting', experienceNeeded: 3, field: 'Accounting' }],
+        competencies: ['Integrity', 'Communication', 'Teamwork'],
+        languages: ['English', 'Kinyarwanda'],
+        salaryRange: {
+            min: 500000,
+            max: 1500000,
+            currency: 'RWF'
+        }
     });
 
+    const addField = (field: 'responsibilities' | 'exams' | 'competencies' | 'languages') => {
+        setFormData({ ...formData, [field]: [...formData[field], ''] });
+    };
+
+    const removeField = (field: 'responsibilities' | 'exams' | 'competencies' | 'languages', index: number) => {
+        const next = [...formData[field]];
+        next.splice(index, 1);
+        setFormData({ ...formData, [field]: next });
+    };
+
+    const addQual = () => {
+        setFormData({
+            ...formData,
+            qualifications: [...formData.qualifications, { degree: '', experienceNeeded: 0, field: '' }]
+        });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        try {
+            const res = await fetch('/api/jobs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to create job');
+            }
+
+            router.push('/jobs');
+        } catch (err: any) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
+
     return (
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex min-h-screen bg-[#F9FAFB]">
             <Sidebar />
             <div className="flex-1 flex flex-col">
                 <Navbar />
-                <main className="p-8 max-w-4xl mx-auto w-full">
-                    <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 mb-6 transition-colors">
-                        <ArrowLeft className="w-4 h-4" />
-                        Back to Dashboard
-                    </Link>
+                <main className="p-8 max-w-5xl mx-auto w-full space-y-8 animate-in slide-in-from-bottom-4 duration-700 pb-20">
+                    <header className="flex justify-between items-end">
+                        <div className="space-y-1">
+                            <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Mission Deployment</h1>
+                            <p className="text-slate-500 font-bold">RDB-Style high-fidelity job configuration engine.</p>
+                        </div>
+                        <div className="bg-blue-50 px-4 py-2 rounded-xl border border-blue-100 flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-[#1E3A8A]" />
+                            <span className="text-[10px] font-black uppercase text-[#1E3A8A] tracking-[0.2em]">Neural Matcher Active</span>
+                        </div>
+                    </header>
 
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="bg-slate-50 border-b border-slate-200 px-8 py-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="flex items-center gap-2">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step === i ? 'bg-indigo-600 text-white' : step > i ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'
-                                            }`}>
-                                            {step > i ? <CheckCircle className="w-5 h-5" /> : i}
+                    <form onSubmit={handleSubmit} className="space-y-8">
+                        <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl overflow-hidden">
+                            <div className="p-12 space-y-12">
+                                {/* Section 1: Core Intelligence */}
+                                <section className="space-y-8">
+                                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-[#7C3AED] flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-[#7C3AED] rounded-full" />
+                                        Core mission configuration
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        <div className="md:col-span-2 space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Target Mission Title</label>
+                                            <input
+                                                required
+                                                value={formData.title}
+                                                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                                placeholder="e.g. SPIU Accountant"
+                                            />
                                         </div>
-                                        <span className={`text-sm font-medium ${step === i ? 'text-slate-900' : 'text-slate-400'}`}>
-                                            {i === 1 ? 'Job Details' : i === 2 ? 'Upload Candidates' : i === 3 ? 'AI Rubric' : 'Review'}
-                                        </span>
-                                        {i < 4 && <div className="w-8 h-px bg-slate-200 ml-2" />}
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Level (Node Tier)</label>
+                                            <input
+                                                value={formData.level}
+                                                onChange={e => setFormData({ ...formData, level: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                                placeholder="5.III"
+                                            />
+                                        </div>
                                     </div>
-                                ))}
+
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Quota (Posts)</label>
+                                            <input
+                                                type="number"
+                                                value={formData.postCount}
+                                                onChange={e => setFormData({ ...formData, postCount: parseInt(e.target.value) })}
+                                                className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="space-y-2 md:col-span-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Reports To (Neural Authority)</label>
+                                            <input
+                                                value={formData.reportsTo}
+                                                onChange={e => setFormData({ ...formData, reportsTo: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Deadline Node</label>
+                                            <input
+                                                type="date"
+                                                required
+                                                value={formData.deadline}
+                                                onChange={e => setFormData({ ...formData, deadline: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                            />
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* Section 2: Technical Specifications */}
+                                <section className="space-y-8">
+                                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-[#1E3A8A] flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-[#1E3A8A] rounded-full" />
+                                        Neural Requirements & Responsibilities
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 flex justify-between items-center">
+                                            Core Responsibilities
+                                            <button type="button" onClick={() => addField('responsibilities')} className="text-[#1E3A8A] hover:underline">+ Add Entry</button>
+                                        </label>
+                                        {formData.responsibilities.map((resp, i) => (
+                                            <div key={i} className="flex gap-4">
+                                                <input
+                                                    value={resp}
+                                                    onChange={e => {
+                                                        const next = [...formData.responsibilities];
+                                                        next[i] = e.target.value;
+                                                        setFormData({ ...formData, responsibilities: next });
+                                                    }}
+                                                    className="flex-1 bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 px-6 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900 shadow-inner"
+                                                    placeholder="e.g. Prepare monthly reconciliation..."
+                                                />
+                                                <button type="button" onClick={() => removeField('responsibilities', i)} className="text-red-400 hover:text-red-600">×</button>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1 flex justify-between items-center">
+                                            Mandatory Qualifications
+                                            <button type="button" onClick={addQual} className="text-[#1E3A8A] hover:underline">+ Add Qualification</button>
+                                        </label>
+                                        {formData.qualifications.map((qual, i) => (
+                                            <div key={i} className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
+                                                <input
+                                                    placeholder="Degree Title"
+                                                    value={qual.degree}
+                                                    onChange={e => {
+                                                        const next = [...formData.qualifications];
+                                                        next[i].degree = e.target.value;
+                                                        setFormData({ ...formData, qualifications: next });
+                                                    }}
+                                                    className="bg-white border border-slate-100 rounded-xl py-2 px-4 font-bold text-sm"
+                                                />
+                                                <input
+                                                    placeholder="Specialization"
+                                                    value={qual.field}
+                                                    onChange={e => {
+                                                        const next = [...formData.qualifications];
+                                                        next[i].field = e.target.value;
+                                                        setFormData({ ...formData, qualifications: next });
+                                                    }}
+                                                    className="bg-white border border-slate-100 rounded-xl py-2 px-4 font-bold text-sm"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    placeholder="Years Experience"
+                                                    value={qual.experienceNeeded}
+                                                    onChange={e => {
+                                                        const next = [...formData.qualifications];
+                                                        next[i].experienceNeeded = parseInt(e.target.value);
+                                                        setFormData({ ...formData, qualifications: next });
+                                                    }}
+                                                    className="bg-white border border-slate-100 rounded-xl py-2 px-4 font-bold text-sm"
+                                                />
+                                                <button type="button" onClick={() => {
+                                                    const next = [...formData.qualifications];
+                                                    next.splice(i, 1);
+                                                    setFormData({ ...formData, qualifications: next });
+                                                }} className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">×</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {/* Section 3: Eval Matrix */}
+                                <section className="space-y-8">
+                                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-[#16A34A] rounded-full" />
+                                        Evaluation Matrix (Exams)
+                                    </h2>
+                                    <div className="flex flex-wrap gap-4">
+                                        {['PsychometricTest', 'Written', 'Oral', 'Practical', 'Presentation'].map(exam => (
+                                            <button
+                                                type="button"
+                                                key={exam}
+                                                onClick={() => {
+                                                    const next = formData.exams.includes(exam)
+                                                        ? formData.exams.filter(e => e !== exam)
+                                                        : [...formData.exams, exam];
+                                                    setFormData({ ...formData, exams: next });
+                                                }}
+                                                className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest border transition-all ${formData.exams.includes(exam)
+                                                    ? 'bg-green-50 border-green-200 text-green-700 shadow-sm'
+                                                    : 'bg-white border-slate-100 text-slate-400'
+                                                    }`}
+                                            >
+                                                {exam}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div className="bg-slate-50 p-12 flex items-center justify-between border-t border-slate-100">
+                                <div className="space-y-1">
+                                    <h4 className="text-xl font-black text-slate-900 tracking-tight">Deploy to Matrix?</h4>
+                                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Instant visibility to all nodes.</p>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="bg-[#1E3A8A] text-white px-12 py-5 rounded-[2rem] font-black shadow-2xl shadow-blue-100 hover:bg-[#2563EB] transition-all flex items-center gap-3 active:scale-95 disabled:opacity-50"
+                                >
+                                    {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Execute Deployment'}
+                                    {!loading && <ArrowRight className="w-6 h-6" />}
+                                </button>
                             </div>
                         </div>
-
-                        <div className="p-8">
-                            {step === 1 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                    <div className="grid grid-cols-1 gap-6">
-                                        <div>
-                                            <label className="block text-sm font-semibold mb-2">Job Title</label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g. Senior Fullstack Developer"
-                                                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                                value={jobData.title}
-                                                onChange={(e) => setJobData({ ...jobData, title: e.target.value })}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold mb-2">Job Description</label>
-                                            <textarea
-                                                rows={6}
-                                                placeholder="Describe the role, requirements, and responsibilities..."
-                                                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                                value={jobData.description}
-                                                onChange={(e) => setJobData({ ...jobData, description: e.target.value })}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-semibold mb-2">Location</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Remote / Kigali, Rwanda"
-                                                className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                                                value={jobData.location}
-                                                onChange={(e) => setJobData({ ...jobData, location: e.target.value })}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-end pt-4">
-                                        <button
-                                            onClick={() => setStep(2)}
-                                            className="bg-indigo-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-all"
-                                        >
-                                            Continue
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {step === 2 && (
-                                <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                                    <div className="border-2 border-dashed border-slate-200 rounded-xl p-12 text-center hover:border-indigo-400 transition-colors cursor-pointer group">
-                                        <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                                            <Upload className="w-8 h-8 text-indigo-600" />
-                                        </div>
-                                        <h3 className="text-lg font-bold">Upload Candidate List</h3>
-                                        <p className="text-slate-500 max-w-xs mx-auto mt-2">
-                                            Drag and drop your candidates CSV, Excel, or PDF resumes here.
-                                        </p>
-                                        <button className="mt-6 bg-white border border-slate-200 px-6 py-2 rounded-lg font-semibold hover:bg-slate-50 transition-all inline-flex items-center gap-2">
-                                            <FileText className="w-4 h-4" />
-                                            Browse Files
-                                        </button>
-                                    </div>
-
-                                    <div className="flex items-center gap-4 bg-amber-50 border border-amber-100 p-4 rounded-lg">
-                                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <Users className="w-5 h-5 text-amber-700" />
-                                        </div>
-                                        <p className="text-sm text-amber-800">
-                                            <strong>Tip:</strong> AI performs best when you include structured data like skills and years of experience in your CSV.
-                                        </p>
-                                    </div>
-
-                                    <div className="flex justify-between pt-4">
-                                        <button
-                                            onClick={() => setStep(1)}
-                                            className="text-slate-600 font-bold px-8 py-2 hover:text-slate-900"
-                                        >
-                                            Back
-                                        </button>
-                                        <button
-                                            onClick={() => setStep(3)}
-                                            className="bg-indigo-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-all"
-                                        >
-                                            Continue
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {step === 3 && (
-                                <div className="space-y-8 animate-in slide-in-from-right-4 duration-500">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-slate-800 mb-2">Configure AI Rubric</h3>
-                                        <p className="text-sm text-slate-500">Define what the AI should prioritize during screening.</p>
-                                    </div>
-
-                                    <div className="space-y-6">
-                                        <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-3">Must-Have Skills (High Weight)</label>
-                                            <div className="flex flex-wrap gap-2 mb-3">
-                                                {['React', 'Next.js', 'TypeScript'].map(tag => (
-                                                    <span key={tag} className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 flex items-center gap-2">
-                                                        {tag}
-                                                        <button className="hover:text-indigo-900">×</button>
-                                                    </span>
-                                                ))}
-                                                <button className="text-xs font-bold text-indigo-600 hover:underline">+ Add Skill</button>
-                                            </div>
-                                        </div>
-
-                                        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-                                            <h4 className="font-bold mb-3 flex items-center gap-2">
-                                                <Zap className="w-4 h-4 text-indigo-600" />
-                                                AI Bias Mitigation
-                                            </h4>
-                                            <div className="flex items-center justify-between">
-                                                <p className="text-xs text-slate-500 pr-8">Automatically anonymize names and gender-identifying data during initial parsing to ensure fairness.</p>
-                                                <div className="w-12 h-6 bg-indigo-600 rounded-full p-1 cursor-pointer">
-                                                    <div className="w-4 h-4 bg-white rounded-full ml-auto" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex justify-between pt-4">
-                                        <button
-                                            onClick={() => setStep(2)}
-                                            className="text-slate-500 font-bold px-8 py-2 hover:text-slate-900 transition-colors"
-                                        >
-                                            Back
-                                        </button>
-                                        <button
-                                            onClick={() => setStep(4)}
-                                            className="bg-indigo-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-all shadow-md"
-                                        >
-                                            Continue
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {step === 4 && (
-                                <div className="space-y-6 animate-in zoom-in-95 duration-500">
-                                    <div className="bg-indigo-600 p-8 rounded-2xl text-white shadow-xl relative overflow-hidden group">
-                                        <Sparkles className="absolute -right-4 -top-4 w-32 h-32 text-indigo-400 opacity-20 group-hover:rotate-12 transition-transform duration-700" />
-                                        <h4 className="font-bold text-xl mb-2 relative z-10">Ready to Screen?</h4>
-                                        <p className="text-indigo-100 text-sm opacity-80 relative z-10 leading-relaxed mb-6">
-                                            Our AI will analyze 12 candidates against your requirements for "{jobData.title || 'the role'}".
-                                            It will prioritize your custom rubric and bias mitigation settings.
-                                        </p>
-                                    </div>
-
-                                    <div className="flex justify-between pt-4">
-                                        <button
-                                            onClick={() => setStep(3)}
-                                            className="text-slate-600 font-bold px-8 py-2 hover:text-slate-900"
-                                        >
-                                            Back
-                                        </button>
-                                        <button
-                                            className="bg-indigo-900 text-white px-8 py-2 rounded-lg font-bold hover:bg-black transition-all shadow-lg flex items-center gap-2"
-                                            onClick={() => {
-                                                router.push('/jobs/1/results');
-                                            }}
-                                        >
-                                            <BarChart3 className="w-5 h-5" />
-                                            Run AI Screening
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    </form>
                 </main>
             </div>
         </div>

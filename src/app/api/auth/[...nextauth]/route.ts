@@ -4,7 +4,7 @@ import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+export const authOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -33,15 +33,15 @@ const handler = NextAuth({
         })
     ],
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: any) {
             if (user) {
-                token.role = (user as any).role;
+                token.role = user.role;
             }
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token }: any) {
             if (session.user) {
-                (session.user as any).role = token.role;
+                session.user.role = token.role;
             }
             return session;
         }
@@ -50,9 +50,11 @@ const handler = NextAuth({
         signIn: '/login',
     },
     session: {
-        strategy: "jwt"
+        strategy: "jwt" as const
     },
     secret: process.env.NEXTAUTH_SECRET || "umurava-hackathon-2026-secret"
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

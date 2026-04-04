@@ -1,113 +1,106 @@
 'use client';
 
-import { Settings, User, Shield, Bell, CreditCard, Building2, Globe, Mail, Save } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { Settings, User, Bell, Shield, Wallet, Globe, ArrowRight, Save, Loader2 } from 'lucide-react';
+import Sidebar from '@/components/Sidebar';
+import Navbar from '@/components/Navbar';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 export default function SettingsPage() {
-    const { data: session } = useSession();
-    const [activeTab, setActiveTab] = useState('profile');
+    const [saving, setSaving] = useState(false);
 
-    const tabs = [
-        { id: 'profile', label: 'My Profile', icon: User },
-        { id: 'company', label: 'Organization', icon: Building2 },
-        { id: 'security', label: 'Security', icon: Shield },
-        { id: 'billing', label: 'Plan & Billing', icon: CreditCard },
-    ];
+    const handleSave = () => {
+        setSaving(true);
+        setTimeout(() => setSaving(false), 1500);
+    };
 
     return (
-        <div className="p-8 max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="mb-8">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">System Settings</h1>
-                <p className="text-slate-500 font-bold mt-1">Manage your recruiter profile and organization preferences</p>
-            </div>
+        <div className="flex min-h-screen bg-[#F9FAFB]">
+            <Sidebar />
+            <div className="flex-1 flex flex-col">
+                <Navbar />
+                <main className="p-8 max-w-4xl mx-auto w-full space-y-8 animate-in slide-in-from-right-4 duration-700">
+                    <header>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight">System Configuration</h1>
+                        <p className="text-slate-500 font-bold mt-1">Manage your identity, security, and neural preferences.</p>
+                    </header>
 
-            <div className="flex gap-8">
-                {/* Sidebar Tabs */}
-                <div className="w-64 space-y-1">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-black transition-all ${activeTab === tab.id
-                                    ? 'bg-[#1E3A8A] text-white shadow-xl shadow-blue-100'
-                                    : 'text-slate-500 hover:bg-slate-50'
-                                }`}
-                        >
-                            <tab.icon className="w-5 h-5" />
-                            {tab.label}
-                        </button>
-                    ))}
-                </div>
+                    <div className="bg-white rounded-[3rem] border border-slate-100 shadow-2xl overflow-hidden">
+                        <div className="flex">
+                            <aside className="w-64 bg-slate-50 border-r border-slate-100 p-8 space-y-2">
+                                {[
+                                    { icon: User, label: 'Profile Settings', active: true },
+                                    { icon: Shield, label: 'Security & Access' },
+                                    { icon: Bell, label: 'Notifications' },
+                                    { icon: Wallet, label: 'Payroll & Tiers' },
+                                    { icon: Globe, label: 'Matrix Location' }
+                                ].map(item => (
+                                    <button
+                                        key={item.label}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${item.active ? 'bg-white text-[#1E3A8A] shadow-sm' : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'
+                                            }`}
+                                    >
+                                        <item.icon className="w-4 h-4" />
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </aside>
 
-                {/* Content Area */}
-                <div className="flex-1 bg-white rounded-3xl border border-slate-100 shadow-xl p-10">
-                    {activeTab === 'profile' && (
-                        <div className="space-y-8 animate-in fade-in duration-500">
-                            <div className="flex items-center gap-6 pb-8 border-b border-slate-50">
-                                <div className="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl">
-                                    <User className="w-12 h-12 text-[#1E3A8A]" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-black text-slate-900 truncate">{session?.user?.name || 'Recruiter Name'}</h3>
-                                    <p className="text-sm text-slate-500 font-bold mb-3">{session?.user?.email}</p>
-                                    <span className="bg-ai-gradient text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
-                                        Pro Recruiter
-                                    </span>
+                            <div className="flex-1 p-12 space-y-8">
+                                <section className="space-y-6">
+                                    <h3 className="font-black text-slate-900 flex items-center gap-2">
+                                        <User className="w-5 h-5 text-blue-600" />
+                                        Authorized Identity
+                                    </h3>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Full Name</label>
+                                            <input className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3 px-5 outline-none focus:border-[#1E3A8A] transition-all font-bold text-slate-900" defaultValue="Authorized User" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Work Email</label>
+                                            <input className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3 px-5 outline-none focus:border-slate-200 transition-all font-bold text-slate-300" defaultValue="user@umurava.ai" readOnly />
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section className="space-y-6">
+                                    <h3 className="font-black text-slate-900 flex items-center gap-2">
+                                        <Shield className="w-5 h-5 text-purple-600" />
+                                        Neural Security
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:border-[#7C3AED] transition-all">
+                                            <div>
+                                                <h4 className="text-sm font-black text-slate-900">Multi-Factor Authentication</h4>
+                                                <p className="text-xs text-slate-400 font-bold">Biometric verification via AI-link.</p>
+                                            </div>
+                                            <div className="w-12 h-6 bg-slate-200 rounded-full relative shadow-inner"><div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all" /></div>
+                                        </div>
+                                        <div className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:border-[#1E3A8A] transition-all">
+                                            <div>
+                                                <h4 className="text-sm font-black text-slate-900">Neural Visibility</h4>
+                                                <p className="text-xs text-slate-400 font-bold">Show your skills to verified recruiters.</p>
+                                            </div>
+                                            <div className="w-12 h-6 bg-[#16A34A] rounded-full relative shadow-inner shadow-green-900/10"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full transition-all" /></div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div className="pt-6">
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving}
+                                        className="bg-[#1E3A8A] text-white px-10 py-4 rounded-2xl font-black shadow-2xl shadow-blue-100 hover:bg-[#2563EB] transition-all flex items-center gap-3 active:scale-95 disabled:opacity-50 min-w-[200px] justify-center"
+                                    >
+                                        {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                        {saving ? 'Syncing...' : 'Save Matrix Prefs'}
+                                    </button>
                                 </div>
                             </div>
-
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Display Name</label>
-                                    <div className="relative group">
-                                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#2563EB]" />
-                                        <input
-                                            type="text"
-                                            defaultValue={session?.user?.name || ''}
-                                            className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Email Address</label>
-                                    <div className="relative group">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#2563EB]" />
-                                        <input
-                                            type="email"
-                                            defaultValue={session?.user?.email || ''}
-                                            disabled
-                                            className="w-full bg-slate-100 border-2 border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 outline-none font-bold text-sm text-slate-400"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Default Workspace</label>
-                                    <div className="relative group">
-                                        <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#2563EB]" />
-                                        <select className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:ring-4 focus:ring-blue-50 focus:border-[#2563EB] font-bold text-sm appearance-none">
-                                            <option>Rwanda (Kigali)</option>
-                                            <option>Global (Remote)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button className="bg-[#1E3A8A] text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 hover:bg-[#2563EB] transition-all shadow-xl shadow-blue-100 mt-4">
-                                <Save className="w-5 h-5" />
-                                Save Profile Changes
-                            </button>
                         </div>
-                    )}
-
-                    {activeTab !== 'profile' && (
-                        <div className="flex flex-col items-center justify-center p-20 text-center space-y-4">
-                            <Settings className="w-12 h-12 text-slate-200 animate-spin-slow" />
-                            <h3 className="text-lg font-black text-slate-900 tracking-tight">{tabs.find(t => t.id === activeTab)?.label} Module</h3>
-                            <p className="text-sm text-slate-500 font-bold max-w-xs">Connecting to secure cloud infrastructure... This module will be live in the production rollout.</p>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                </main>
             </div>
         </div>
     );

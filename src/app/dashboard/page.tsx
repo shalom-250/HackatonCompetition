@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { Plus, User, ShieldCheck, Award, Zap } from "lucide-react";
+import Link from 'next/link';
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import DashboardStats from "@/components/DashboardStats";
@@ -23,10 +24,10 @@ export default function Home() {
                 Welcome back, {session?.user?.name || 'Recruiter'}. Here's your talent intelligence overview.
               </p>
             </div>
-            <button className="bg-[#1E3A8A] text-white px-6 py-3 rounded-2xl font-black flex items-center gap-2 hover:bg-[#2563EB] transition-all shadow-lg shadow-blue-100 active:scale-95">
+            <Link href="/jobs/new" className="bg-[#1E3A8A] text-white px-6 py-3 rounded-2xl font-black flex items-center gap-2 hover:bg-[#2563EB] transition-all shadow-lg shadow-blue-100 active:scale-95">
               <Plus className="w-5 h-5" />
               Create New Job
-            </button>
+            </Link>
           </div>
 
           <DashboardStats />

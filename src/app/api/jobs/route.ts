@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
+import connectDB from '@/lib/mongodb';
 import Job from '@/models/Job';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function GET() {
     try {
-        await dbConnect();
-        const jobs = await Job.find({}).sort({ createdAt: -1 }).limit(10);
+        await connectDB();
+        const jobs = await Job.find({}).sort({ createdAt: -1 });
         return NextResponse.json(jobs);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -14,10 +16,26 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        await dbConnect();
-        const data = await req.json();
-        const job = await Job.create(data);
-        return NextResponse.json(job);
+        const session = await getServerSession(authOptions);
+        if (!session || ((session.user as any).role !== 'recruiter' && (session.user as any).role !== 'admin')) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        await connectDB();
+        const body = await req.json();
+
+        // Ensure arrays are initialized if missing
+        const jobData = {
+            ...body,
+            responsibilities: body.responsibilities || [],
+            exams: body.exams || [],
+            qualifications: body.qualifications || [],
+            competencies: body.competencies || [],
+            languages: body.languages || []
+        };
+
+        const job = await Job.create(jobData);
+        return NextResponse.json(job, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

@@ -45,11 +45,17 @@ export default function SeekerDashboard() {
                             Mwirirwe, {user?.name?.split(' ')[0] || 'Talent'}! <Sparkles className="w-6 h-6 text-[#7C3AED]" />
                         </h1>
                         <p className="text-slate-500 font-bold mt-1">Your AI Career Coach has fresh insights for you today.</p>
+                        <div className="flex items-center gap-4 mt-6">
+                            <Link href="/" className="bg-[#1E3A8A] text-white px-8 py-3.5 rounded-2xl font-black flex items-center gap-2 hover:bg-[#2563EB] transition-all shadow-lg active:scale-95 text-sm">
+                                <Search className="w-4 h-4" />
+                                Find New Missions
+                            </Link>
+                            <Link href="/jobseeker/profile" className="bg-white border border-slate-200 text-slate-700 px-8 py-3.5 rounded-2xl font-black flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm active:scale-95 text-sm">
+                                <User className="w-4 h-4" />
+                                Identity Profile
+                            </Link>
+                        </div>
                     </div>
-                    <Link href="/" className="bg-[#1E3A8A] text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-blue-100 hover:bg-[#2563EB] transition-all flex items-center gap-2 text-sm">
-                        <Search className="w-4 h-4" />
-                        Find New Opportunities
-                    </Link>
                 </div>
             </header>
 

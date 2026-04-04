@@ -1,35 +1,63 @@
-import { useEffect, useState } from 'react';
-import { Users, Briefcase, CheckCircle, Clock } from 'lucide-react';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Briefcase, Users, CheckCircle2, TrendingUp, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function DashboardStats() {
     const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch('/api/stats')
             .then(res => res.json())
-            .then(data => setStats(data));
+            .then(data => {
+                setStats(data);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
     }, []);
 
-    const statCards = [
-        { label: 'Total Applicants', value: stats?.totalApplicants ?? '0', icon: Users, color: 'text-[#2563EB]', bg: 'bg-blue-50' },
-        { label: 'Active Jobs', value: stats?.activeJobs ?? '0', icon: Briefcase, color: 'text-[#1E3A8A]', bg: 'bg-indigo-50' },
-        { label: 'Shortlisted', value: stats?.shortlisted ?? '0', icon: CheckCircle, color: 'text-[#16A34A]', bg: 'bg-green-50' },
-        { label: 'Waitlisted', value: stats?.waitlisted ?? '0', icon: Clock, color: 'text-[#DC2626]', bg: 'bg-red-50' },
+    const cards = [
+        { label: 'Intelligence Nodes (Jobs)', value: stats?.openJobs || 0, icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Active Talent Flow', value: stats?.totalCandidates || 0, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
+        { label: 'Selected Outcomes', value: stats?.selected || 0, icon: CheckCircle2, color: 'text-green-600', bg: 'bg-green-50' },
+        { label: 'Network Fill Rate', value: `${stats?.fillRate || 0}%`, icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
     ];
+
+    if (loading) {
+        return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-center h-32">
+                        <Loader2 className="w-8 h-8 text-slate-200 animate-spin" />
+                    </div>
+                ))}
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {statCards.map((stat) => (
-                <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1">
+            {cards.map((card, index) => (
+                <motion.div
+                    key={card.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all group"
+                >
                     <div className="flex items-center justify-between mb-4">
-                        <div className={`${stat.bg} ${stat.color} p-3 rounded-xl shadow-inner`}>
-                            <stat.icon className="w-6 h-6" />
+                        <div className={`p-4 rounded-2xl ${card.bg} ${card.color} group-hover:scale-110 transition-transform shadow-inner`}>
+                            <card.icon className="w-6 h-6" />
                         </div>
-                        <span className="text-[10px] font-black text-[#16A34A] bg-green-50 px-2 py-1 rounded-full uppercase tracking-tighter shadow-sm">+12%</span>
+                        <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Active Matrix</div>
                     </div>
-                    <h3 className="text-[#6B7280] text-xs font-bold uppercase tracking-widest">{stat.label}</h3>
-                    <p className="text-3xl font-black mt-1 text-[#111827]">{stat.value}</p>
-                </div>
+                    <div>
+                        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">{card.label}</h3>
+                        <p className="text-3xl font-black text-slate-900 mt-1">{card.value}</p>
+                    </div>
+                </motion.div>
             ))}
         </div>
     );
