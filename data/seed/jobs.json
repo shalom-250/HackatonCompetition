@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "69d03e1db28c14cb7f94b060",
+    "title": "english teacher",
+    "description": "dfghjk",
+    "requirements": "hvkhbhb",
+    "skills": [
+      "English"
+    ],
+    "experience": "Mid-Level",
+    "location": "Kigali, Rwanda",
+    "salaryRange": {
+      "min": 500000,
+      "max": 1500000,
+      "currency": "RWF"
+    },
+    "employmentType": "Full-time",
+    "status": "open",
+    "createdAt": "2026-04-03T22:24:29.923Z",
+    "__v": 0
+  }
+]

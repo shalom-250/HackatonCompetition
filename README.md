@@ -54,6 +54,40 @@ An innovation challenge project for the Umurava AI Hackathon 2026. This tool is 
 
 5. Open [http://localhost:3000](http://localhost:3000) with your browser.
 
+## 🗄️ Database Management
+
+To ensure your collaborators have the same data as you, use the following scripts to export and import the database.
+
+### 📤 Exporting the Database
+This script saves all documents from the `users`, `jobs`, `candidates`, and `applications` collections into JSON files in the `data/seed/` directory.
+
+```bash
+npx tsx src/scripts/export-db.ts
+```
+
+### 📥 Importing the Database
+This script reads the JSON files from `data/seed/` and imports them into your local MongoDB.
+
+**Prerequisites:**
+- Ensure MongoDB is installed and running on your local machine.
+- Your `.env.local` must have the correct `MONGODB_URI` (default: `mongodb://localhost:27017/hackaton_db`).
+
+**Command:**
+```bash
+npx tsx src/scripts/import-db.ts
+```
+> [!WARNING]
+> This will clear existing data in the `users`, `jobs`, `candidates`, and `applications` collections before importing to ensure a clean state.
+
+## 🔐 Access Credentials
+
+After importing the database, you can use the following accounts to test the system:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Elite Recruiter** | `recruiter@umurava.ai` | `password123` |
+| **Ambitious Seeker** | `seeker@umurava.ai` | `password123` |
+
 ## 🧠 AI Decision Flow
 
 1. **Extraction:** AI extracts key skills and requirements from the job description.

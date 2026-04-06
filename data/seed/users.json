@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "69d02e3aa2f3a02d772dcfbc",
+    "email": "recruiter@umurava.ai",
+    "__v": 0,
+    "name": "Elite Recruiter",
+    "password": "$2b$12$HV7ErDD7mDab28FEDfc3Fu.xYloQfgaF1HZz4DuRYHnVWTlzXgWPu",
+    "role": "recruiter"
+  },
+  {
+    "_id": "69d02e3aa2f3a02d772dcfbd",
+    "email": "seeker@umurava.ai",
+    "__v": 0,
+    "name": "Ambitious Seeker",
+    "password": "$2b$12$HV7ErDD7mDab28FEDfc3Fu.xYloQfgaF1HZz4DuRYHnVWTlzXgWPu",
+    "role": "jobseeker"
+  },
+  {
+    "_id": "69d0308231345e2ae0409cdc",
+    "name": "shan",
+    "email": "niyonkurushalom12@gmail.com",
+    "password": "$2b$12$ERbDn5i4Ul.GzesAPQXpIuCGD8gVIhPo/h3P0M3GKSGu8LtPeXumC",
+    "role": "recruiter",
+    "createdAt": "2026-04-03T21:26:26.950Z",
+    "__v": 0
+  },
+  {
+    "_id": "69d0314831345e2ae0409cdd",
+    "name": "lolo",
+    "email": "niyonkurushalom@gmail.com",
+    "password": "$2b$12$LuQXEs.ImrsXZ/FeOkG3X..v74wmJQgOt3JCutCfR.5TBJm7vxkWm",
+    "role": "jobseeker",
+    "createdAt": "2026-04-03T21:29:44.836Z",
+    "__v": 0
+  }
+]
